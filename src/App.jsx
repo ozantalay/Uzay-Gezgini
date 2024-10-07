@@ -28,12 +28,40 @@ export default function App() {
         
         4. Bu görevleri yerine getirmek için *sadece* bu yorumların altına kod yazmanız gerekir; bunların üzerinde veya farklı bir dosyada herhangi bir şey değiştirmeniz veya eklemeniz gerekmez 
 */
+const handleStart=()=>{
+  setTimerRunning(true)
+  setTimeLeft(STARTING_TIME)
+  setScore(STARTING_SCORE)
+  playSong()
+  playClick()
+
+  const button = document.querySelector('.play-button')
+    button.classList.remove('fade-in')
+    button.classList.add('fade-out')
+    button.disabled = true 
+
+    const interval = setInterval(() => {   // zamanlayıcı için
+      setTimeLeft(prevTime => {
+        if (prevTime <= 1) {
+          clearInterval(interval)
+          setTimerRunning(false)
+        // zamanlayıcı bittikten sonra button tekrar etkinleşmesi için 
+          button.classList.remove('fade-out')
+          button.classList.add('fade-in')
+          button.disabled = false
+          return 0
+        }
+        return prevTime - 1
+      })
+    }, 1000)
+}
+
 
   return (
     <div>
       <ScoreBoard data={{ score, timeLeft }} />
       <PlayArea playProps={{ timeLeft, timerRunning, setScore }} />
-      <button className='play-button fade-in'>Başlat</button>
+      <button className='play-button fade-in' onClick={handleStart}>Başlat</button>
     </div>
   )
 }
